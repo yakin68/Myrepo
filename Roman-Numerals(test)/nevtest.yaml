@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  
+Parameters:
+  VPC:
+    Description: Choose to VPC 
+    Type: AWS::EC2::VPC::Id
+
+
+  
+Mappings:
+  
+
+  
+Resources:
+
+  Myinstance:
+    Type: AWS::EC2::Instance
+    Properties:
+
+      ImageId: "ami-0bef6cc322bfff646"   ### Amazon Linux 2 AMI için
+
+      InstanceType: "t2.micro"
+
+      KeyName: "end-key-pair"
+    
+      SecurityGroupIds: 
+        - !Ref MyScrGrp
+
+      Tags: 
+        - Key: "Name"
+          Value: "MyinstanceH"
+
+      UserData: "String"
+
+
+  MyScrGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "HTTP-SSH" # Required
+      GroupName: "MyScrGrp"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags: 
+        - Key: "Name"
+          Value: "HTTP-SSH"
+
+      VpcId: !Ref VPC
+
+  
+Outputs:
+  LogicalID:
+    Description: 
+    Value:
+    Export: 
+      Name:

@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This is templete
+Parameters:
+  VPC:
+    Description: Choose one VPS
+    Type: AWS::EC2::VPC::Id
+
+  Keypair:
+    Description: Key pair name
+    Type: AWS::EC2::KeyPair::KeyName
+
+  InstanceType:
+    Description: Choose the instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+      - t2.nano
+
+  EnvParameter:
+    Description: Choose your environment type
+    Type: String
+    AllowedValues:
+      - prod     
+
+Mappings:
+    RegionImageMap:
+      us-east-1:
+        prod: ami-0715c1897453cabd1
+      us-east-2:
+        prod: ami-01107263728f3bef4
+      us-west-1:
+        prod: ami-0062dbf6b829f04e1
+      us-west-2:
+        prod: ami-0ab193018f3e9351b
+      eu-west-1:
+        prod: ami-04f7efe62f419d9f5
+      
+
+Resources:
+
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+
+      ImageId: !FindInMap
+        - RegionImageMap
+        - !Ref "AWS::Region"
+        - !Ref EnvParameter  
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref Keypair
+      SecurityGroupIds: 
+        - !GetAtt MyScrGrp.GroupId
+      UserData: !Base64 |
+        #! /bin/bash
+        yum update -y
+        yum install -y python3 python3-pip
+        pip3 install flask
+        FOLDER="https://raw.githubusercontent.com/ersinsari13/MyProject/main/Project-001-Roman-Numerals-Converter"
+        mkdir roman-number-conversion-project && cd roman-number-conversion-project
+        wget $FOLDER/app.py
+        mkdir templates && cd templates
+        wget $FOLDER/templates/index.html
+        wget $FOLDER/templates/result.html
+        cd ..
+        chmod +x app.py
+        python3 app.py
+
+  MyScrGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ssh-htpp # Required
+      GroupName: MyScrGrp
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0        
+      VpcId: !Ref VPC # SONRA GİR
+
+  
+Outputs:
+  DNScfn:
+    Description: DNS of Instance
+    Value: !Join 
+    - ''
+    - - 'http://'
+      - !GetAtt MyInstance.PublicDnsName
