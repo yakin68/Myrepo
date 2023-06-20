@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This template creates an ASG with ELB.
+Parameters:
+  EnvirList:
+    Description: Please select the environment type.
+    Type: String
+    AllowedValues:
+         - prod
+         - test  # look at the tabs
+  InstanceType:
+    Description: Choose the instance you want to use.
+    Type: String
+    Default: yansin instancelar
+    AllowedValues:
+         - t2.micro
+         - t3.micro
+         - j5.xlarge
+  MyKeyPair:
+    Description: Select only one keypair.
+    Type: AWS::EC2::KeyPair::KeyName
+Mappings:
+  RegionImageMap:
+    us-east-1:
+      prod: ami-0715c1897453cabd1
+      test: ami-0bef6cc322bfff646
+    us-east-2:
+      prod: ami-01107263728f3bef4
+      test: ami-05842f1afbf311a43
+    us-west-1:
+      prod: ami-0062dbf6b829f04e1
+      test: ami-04669a22aad391419
+    us-west-2:
+      prod: ami-0ab193018f3e9351b
+      test: ami-03c7c1f17ee073747
+    eu-west-1:
+      prod: ami-04f7efe62f419d9f5
+      test: ami-0e23c576dacf2e3df
+Resources:
+  MySecGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: enables SSH and HTTP # Required
+      GroupName: muratsecgrp
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      VpcId: "String" # we ll write afterwards
+  MyLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !FindInMap # [ MappingName, keyname, value ]
+          - RegionImageMap
+          - !Ref AWS::Region # look at the quotation marks
+          - !Ref EnvirList
+        InstanceType: !Ref InstanceType
+        KeyName: !Ref MyKeyPair
+        SecurityGroupIds:
+          - !GetAtt MySecGrp.GroupId  # !Ref MySecGrp da çalışırdı
+        UserData: !Base64 |
+          #!/bin/bash
+          #update os
+          yum update -y
+          #install apache server
+          yum install -y httpd
+          # get private ip address of ec2 instance using instance metadata
+          TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` \
+          && PRIVATE_IP=`curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4`
+          # get public ip address of ec2 instance using instance metadata
+          TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` \
+          && PUBLIC_IP=`curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4`
+          # get date and time of server
+          DATE_TIME=`date`
+          # set all permissions
+          chmod -R 777 /var/www/html
+          # create a custom index.html file
+          echo "<html>
+              <head>
+              <title> Application Load Balancer</title>
+              </head>
+              <body>
+                  <h1>Testing Application Load Balancer</h1>
+                  <h2>Congratulations! You have created an instance from Launch Template</h2>
+                  <h3>This web server is launched from the launch template by Osvaldo via CFN</h3>
+                  <p>This instance is created at <b>$DATE_TIME</b></p>
+                  <p>Private IP address of this instance is <b>$PRIVATE_IP</b></p>
+                  <p>Public IP address of this instance is <b>$PUBLIC_IP</b></p>
+              </body>
+              </html>" > /var/www/html/index.html
+              # start apache server
+              systemctl start httpd
+              systemctl enable httpd
+      LaunchTemplateName: muratlaunchtemplate
+  LogicalID:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: false
+      HealthCheckIntervalSeconds: Number
+      HealthCheckPath: "String"
+      HealthCheckPort: "String"
+      HealthCheckProtocol: "String"
+      HealthCheckTimeoutSeconds: Number
+      HealthyThresholdCount: Number
+      IpAddressType: "String"
+      Matcher:
+        GrpcCode: "String"
+        HttpCode: "String"
+      Name: "String"
+      Port: Number
+      Protocol: "String"
+      ProtocolVersion: "String"
+      Tags:
+        Tags
+      TargetGroupAttributes:
+        TargetGroupAttributes
+      TargetType: "String"
+      Targets:
+        Targets
+      UnhealthyThresholdCount: Number
+      VpcId: "String"
