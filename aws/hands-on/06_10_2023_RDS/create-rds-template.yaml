@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: | 
+  This Template for creating RDS(MySQL) with Security Groups.
+  
+Parameters:
+  
+  VPC:
+    Description: Select a vpc
+    Type: AWS::EC2::VPC::Id
+  
+  dbInstance:
+    Description: Select db instance class
+    Type: String
+    Default: db.t2.micro
+    AllowedValues:
+         - db.t2.micro
+         - db.t3.micro
+  
+Resources:
+  
+  RdsParameterGrp:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      DBParameterGroupName: "Rds-par-grp"
+      Description: This is for mysql rds # Required
+      Family: "MySQL8.0"
+  
+  RdsInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: "20"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: false
+      BackupRetentionPeriod: 7
+      CopyTagsToSnapshot: false
+      DBInstanceClass: !Ref dbInstance
+      DBInstanceIdentifier: ersindb
+      DBName: ersin
+      DBParameterGroupName: !Ref RdsParameterGrp
+      DBSecurityGroups: 
+        - !Ref RdsSecGroup
+      DeleteAutomatedBackups: false
+      DeletionProtection: false
+      Engine: mysql
+      EngineVersion: "8.0.33"
+      LicenseModel: general-public-license
+      MasterUserPassword: ersin123
+      MasterUsername: admin
+      MultiAZ: false
+      Port: "3306"
+      PubliclyAccessible: true
+      StorageEncrypted: false
+      StorageType: gp2
+  
+  Ec2SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: This is for rds security group # Required
+      GroupName: ec2-sec-group
+      SecurityGroupIngress: 
+        IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        CidrIp: 0.0.0.0/0
+      VpcId: !Ref VPC
+  
+  RdsSecGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      DBSecurityGroupIngress: # Required
+        EC2SecurityGroupId: !Ref Ec2SecGroup
+      GroupDescription: data acsess # Required
+  

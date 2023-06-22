@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: |
+  This template for creating new vpc  
+  
+Resources:
+  
+  PrivateSubnetAttach:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRT  # Required
+      SubnetId: !Ref SubnetPrivate1A # Required
+  
+  PublicSubnetAttach:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRT # Required
+      SubnetId: !Ref SubnetPublic1A # Required
+  
+  SubnetPrivate1A:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "10.10.2.0/24"
+      Tags: 
+        - Key: Name
+          Value: Private-1A
+      VpcId: !Ref VPC # Required
+  
+  SubnetPublic1A:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "10.10.1.0/24"
+      Tags: 
+        - Key: Name
+          Value: Public-1A
+      VpcId: !Ref VPC # Required
+  
+  AttachRt:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: "0.0.0.0/0"
+      RouteTableId: !Ref PublicRT  # Required
+      GatewayId: !Ref InternetGateway
+  
+  PublicRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: Public
+      VpcId: !Ref VPC # Required
+  
+  PrivateRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: Private
+      VpcId: !Ref VPC # Required
+  
+  InternetGateAttachtoVpc:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC # Required
+  
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: InternetGateway
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "10.10.0.0/16"
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags: 
+        - Key: Name
+          Value: cfn-vpc
+  

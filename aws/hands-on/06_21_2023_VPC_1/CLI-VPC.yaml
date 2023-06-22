@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This is myVPC
+Resources:
+
+  PirivateSubnetAttach:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Myrtprivate
+      SubnetId:
+        Ref: SubnetPrivete  # Required
+
+  PublicSubnetAttach:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Myrtpublic # Required
+      SubnetId:
+        Ref: SubnetPublic # Required
+
+  SubnetPrivete:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "10.10.2.0/24"
+      Tags: 
+        - Key: Name
+          Value:  MysubnetPrivate1a  
+      VpcId:
+        Ref: MyVPC # Required
+      
+  SubnetPublic:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "10.10.1.0/24"
+      Tags: 
+        - Key: Name
+          Value:  MysubnetPublic1a  
+      VpcId:
+        Ref: MyVPC # Required    
+      
+  Myfromrttoattach  :
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: "0.0.0.0/0"
+      DependsOn: "GatewayToInternet"
+      GatewayId:
+        Ref: Myinternetgateway
+      RouteTableId:
+        Ref: Myrtpublic # Required
+
+  Myrtpublic:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: MyVPC # Required
+      Tags:
+        - Key: Name
+          Value:  Myrtpublic 
+      
+
+  Myrtprivate:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: MyVPC # Required
+      Tags: 
+        - Key: Name
+          Value:  Myrtprivate 
+
+
+  Myinternetgateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+        - Key: Name
+          Value:  Myinternetgateway  
+
+  Myvpcintgatewayattachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: Myinternetgateway
+      VpcId:
+        Ref: MyVPC # Required
+      
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "10.10.0.0/16"
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: "default"
+      Tags: 
+        - Key: Name
+          Value:  MyVPCTags  
+
+  
