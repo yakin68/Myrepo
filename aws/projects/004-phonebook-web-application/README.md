@@ -104,7 +104,7 @@ thousand                         Warning -> 'Invalid input: Phone number should 
   
     - Instance type can be configured as `db.t2.micro`
 
-    - Database engine can be `MySQL` with version of `8.0.19`.
+    - Database engine can be `MySQL` with version of `8.0.32`.
 
   - Phonebook Application Website URL should be given as output by Cloudformation Service, after the stack created.
 
