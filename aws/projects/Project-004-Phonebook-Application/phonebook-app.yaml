@@ -9,22 +9,19 @@ Description: |
   Launch Template in order to spin up instances needed. LT Launch Template is configured to prepare Python Flask
   environment on EC2, and to deploy Phonebook Application on Flask Server after downloading the app code
   from Github repository.
-
-
 Parameters:
   MyVPC:
     Description: VPC Id of your existing account
     Type: AWS::EC2::VPC::Id
-
   KeyName:
     Description: Please enter your Key pair
     Type: AWS::EC2::KeyPair::KeyName
-
   Subnets:
     Description:  Please select your subnets used by ALB
     Type: List<AWS::EC2::Subnet::Id>  
   
 Resources:
+
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -95,6 +92,7 @@ Resources:
       UnhealthyThresholdCount: 3
       VpcId: !Ref MyVPC
 
+
   ALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -104,7 +102,6 @@ Resources:
         - !GetAtt ALBSecurityGroup.GroupId
       Subnets: !Ref Subnets
       Type: application
-
 
   ALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
