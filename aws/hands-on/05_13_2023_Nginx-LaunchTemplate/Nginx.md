@@ -62,7 +62,7 @@ cd /usr/share/nginx/html
 6. Show content of folder and change the permissions of /usr/share/nginx/html
 ```
 ls
-
+sudo chmod -R 777 /usr/share/nginx/html
 ```
 7. Remove existing `index.html`.
 ```
@@ -87,7 +87,7 @@ sudo systemctl enable nginx
 ```
 sudo chmod -R 777 /usr/share/nginx/html
 ```
-curl 
+# The command chmod -R 777 / makes every single file on the system under / (root) have rwxrwxrwx permissions. This is equivalent to allowing ALL users read/write/execute permissions.
 13. Add another index.html file 
 ```
 echo "Second Page" > /usr/share/nginx/html/index_2.html
@@ -107,7 +107,7 @@ systemctl start nginx
 cd /usr/share/nginx/html
 chmod -R 777 /usr/share/nginx/html
 rm index.html
-cd. https://raw.githubusercontent.com/awsdevopsteam/route-53/master/index.html
+wget https://raw.githubusercontent.com/awsdevopsteam/route-53/master/index.html
 wget https://raw.githubusercontent.com/awsdevopsteam/route-53/master/ken.jpg
 systemctl restart nginx
 systemctl enable nginx
@@ -122,4 +122,3 @@ curl http://ec2-3-15-183-78.us-east-2.compute.amazonaws.com
 
 
 
-sudo chmod -R 777 /usr/share/nginx/html

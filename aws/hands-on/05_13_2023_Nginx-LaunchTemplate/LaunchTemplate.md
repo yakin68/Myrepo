@@ -10,7 +10,7 @@ At the end of the this hands-on training, students will be able to;
 
 - modify Launch Template with versioning.
 
-## OutlineOn
+## Outline
 
 - Part 1 - Creating Launch Templates
 

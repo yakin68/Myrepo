@@ -177,13 +177,6 @@ sudo systemctl restart httpd
 # 28. Check the browser using the WordPress instance Public Ip.
 # You will see the home page of Wordpress. Enter pasword,user name etc... Introduce WordPress.
 
-## tekrar database instance bağlanıp wordpress te oluşturduğumuz veri tabanı bilgilerine ulaşabiliriz.
-mysql -u root -p
-SHOW DATABASES;
-use clarusdb;
-show tables;
-desciribe wp_users;
-select user_email from wp_users;
 ---------------------------------------------------------------------------------------
 
 # PART 2 : Configuring NACL (Network Access Control List)

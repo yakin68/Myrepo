@@ -19,10 +19,9 @@ SELECT Host, User, Password FROM user;
 EXIT;
 
 # Setup secure installation of MariaDB.
-sudo mysql_secure_installation
 # No root password for root so 'Enter' for first question,
 # Then set root password: 'root1234' and yes 'y' to all remaining ones.
-
+sudo mysql_secure_installation
 
 # Show that you can not log into mysql terminal without password anymore.
 mysql -u root

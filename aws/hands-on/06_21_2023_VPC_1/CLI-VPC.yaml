@@ -60,7 +60,6 @@ Resources:
         - Key: Name
           Value:  Myrtpublic 
       
-
   Myrtprivate:
     Type: AWS::EC2::RouteTable
     Properties:

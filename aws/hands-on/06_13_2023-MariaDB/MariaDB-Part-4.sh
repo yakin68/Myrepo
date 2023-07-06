@@ -29,8 +29,6 @@ SELECT first_name, last_name, salary, city, state FROM employees INNER JOIN offi
 # Close the mysql terminal.
 EXIT;
 
-mysql -h ec2-3-94-163-77.compute-1.amazonaws.com -u root -p  ## root ile giriş yapmıyacak çünkü uzaktan bağlantıyı root için kapattık
-
 # DO NOT FORGET TO TERMINATE THE INSTANCES YOU CREATED!!!!!!!!!!
 
 Ref: https://mariadb.org/documentation/

@@ -115,9 +115,9 @@ def find_records():
     if request.method == 'POST':
         keyword = request.form['username']
         persons_app = find_persons(keyword) 
-        return render_template('index.html', persons_html=persons_app, keyword=keyword, show_result=True, developer_name='Yakin')
+        return render_template('index.html', persons_html=persons_app, keyword=keyword, show_result=True, developer_name='oktay')
     else:
-        return render_template('index.html', show_result=False, developer_name='Yakin')
+        return render_template('index.html', show_result=False, developer_name='oktay')
 
 
 # Write a function named `add_record` which inserts new record to the database using `GET` and `POST` methods,
@@ -128,7 +128,7 @@ def add_record():
     if request.method == 'POST':
         name = request.form['username']
         if name is None or name.strip() == "":
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, action_name='save', developer_name='Yakin')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, action_name='save', developer_name='oktay')
         elif name.isdecimal(): 
             return render_template('add-update.html', not_valid=True, message='Invalid input: Name of person should be text', show_result=False, action_name='save', developer_name='Oktay')
         phone_number = request.form['phonenumber']
