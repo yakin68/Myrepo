@@ -288,7 +288,7 @@ The `/etc/fstab` file contains information about file systems that should be mou
 2.  On a new line, paste in the following (remember to use the file system ID):  
     
     ```
-    fs-xxxxxx:/ /home/ec2-user/efs efs tls,_netdev
+    fs-036b129dfbdce556f:/ /home/ec2-user/efs efs tls,_netdev
     
     ```
     
