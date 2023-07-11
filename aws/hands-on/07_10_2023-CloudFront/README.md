@@ -8,7 +8,7 @@
 
 ```text
 
-      -  Domain names               : "[your donamin name].net" (naked domain name)
+      -  Domain names               : "[your donamin name].net" (naked domain name) " *.devopsturkiye.com "
 
       -  Select validation method   : "DNS validation"
   
