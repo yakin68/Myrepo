@@ -1,5 +1,7 @@
 # Hands-on Security WAF : Working with AWS WAF and Application Load Balancers
 
+https://www.whatismyip.com/     ## ip numarasını engeleme veya izin vermek için kullandık AWS WAF da
+
 !!!!Warning: This hands-on may charge you because of the resource we'll create. 
 
 Purpose of this hands-on training is to get exposure to AWS WAF.  We'll cover how to attach WAF Web ACLs to an Application Load Balancer
